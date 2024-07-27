@@ -3,7 +3,7 @@ from flask_cors import CORS
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for the Flask app
+CORS(app)
 
 @app.route('/get_subtitles', methods=['GET'])
 def get_subtitles():
@@ -22,12 +22,18 @@ def get_subtitles():
             transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
             transcript = None
 
-            # Try to find manually created transcripts in 'en-IN'
-            if 'en-IN' in [t.language_code for t in transcript_list]:
-                transcript = transcript_list.find_transcript(['en-IN'])
-            # If not found, try to find generated transcripts in 'hi' (Hindi)
-            elif 'hi' in [t.language_code for t in transcript_list]:
-                transcript = transcript_list.find_transcript(['hi'])
+            # Accessing manually created transcripts
+            try:
+                transcript = transcript_list.find_manually_created_transcript(['en-IN'])
+            except Exception:
+                pass
+            
+            # If no manually created transcripts, try generated transcripts
+            if not transcript:
+                try:
+                    transcript = transcript_list.find_generated_transcript(['hi'])
+                except Exception:
+                    pass
 
             if transcript:
                 transcript_data = transcript.fetch()
@@ -40,6 +46,17 @@ def get_subtitles():
             return jsonify({'error': str(e)}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/convert_to_sign_language', methods=['POST'])
+def convert_to_sign_language():
+    data = request.json
+    subtitles = data.get('subtitles', '')
+    if not subtitles:
+        return jsonify({'error': 'Missing subtitles parameter'}), 400
+
+    # Mock sign language conversion
+    sign_language = ''.join(['🤟' for char in subtitles])  # Replace with actual conversion logic
+    return jsonify({'sign_language': sign_language})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
