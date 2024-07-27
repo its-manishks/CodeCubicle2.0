@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>YouTube Subtitles Capture</title>
+    <style>
+        #subtitles,
+        #signLanguage {
+            white-space: pre-wrap;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>YouTube Subtitles Capture</h1>
+    <button id="getSubtitles">Get Subtitles</button>
+    <button id="convertToSignLanguage">Convert to Sign Language</button>
+    <div id="subtitles"></div>
+    <div id="signLanguage"></div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
